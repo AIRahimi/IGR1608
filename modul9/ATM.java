@@ -2,33 +2,98 @@ package modul9;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Scanner;
 
 public class ATM {
 	
+	private static Scanner input = new Scanner(System.in);
+	private static Account[] accounts = new Account[10];
+	private static int id;
+	
 	public static void main(String[] args) {
-		System.out.println(accounts[1].getBalance());
-	}
-	
-	public void askForId() {
 		
-	}
-	
-	public int getChoice() {
-		return 0;
-	}
-	
-	public void printBalance() {
+		for (int i = 0; i < 10; i++) {
+			accounts[i] = new Account(i+1, 1000);
+		}
 		
+		askForId();
+		
+		int choice = getChoice();
+		
+		while (choice == 4) {
+			System.out.println();
+			askForId();
+			choice = getChoice();
+		}
+		
+		switch (choice) {
+			case 1: 
+				printBalance();
+				break;
+			case 2:
+				withdraw();
+				break;
+			case 3:
+				deposit();
+				break;
+			case 4:
+				System.out.println();
+				askForId();
+				break;
+		}
+			
 	}
 	
-	public void withDraw() {
+	public static void askForId() {
+		System.out.println("Oppgi konto id: ");
+		id = input.nextInt();
 		
+		while (1 > id || id > 10) {
+			System.out.println("Oppgi id mellom 1 og 10."
+					+ "\nOppgi konto id: ");
+			id = input.nextInt();
+		}
 	}
 	
-	public void deposit() {
-		
+	public static int getChoice() {
+		int choice = 0;
+		String choose = "\nMeny" + "\n1: Saldo"	+ "\n2: Uttak"	+ "\n3: Innskudd" 
+				+ "\n4: Avbryt" + "\nDitt valg? ";
+		System.out.println(choose);
+		choice = input.nextInt();
+		while (1 > choice || choice > 4) {
+			System.out.println("\nDu må velge et av alternativene.");
+			System.out.println(choose);
+			choice = input.nextInt();			
+		}
+		return choice;
 	}
-
+	
+	public static void printBalance() {
+		System.out.printf("Saldo for konto nr: %d er %.2f", id, accounts[id-1].getBalance());		
+	}
+	
+	public static void withdraw() {
+		System.out.println("Oppgi uttaksverdi: ");
+		double withdrawAmount = input.nextDouble();
+		
+		if (accounts[id-1].withdraw(withdrawAmount)) 
+			System.out.printf("Tatt ut %.2f fra konto nr %d\n"
+					+ "Saldo for konto nr: %d er %.2f", withdrawAmount, id, id, accounts[id-1].getBalance());
+		else
+			System.out.println("Ugyldig operasjon");
+	}
+	
+	public static void deposit() {
+		System.out.println("Oppgi innskuddsverdi: ");
+		double depositAmount = input.nextDouble();
+		
+		if (accounts[id-1].deposit(depositAmount))
+			System.out.printf("Satt inn %.2f på konto nr %d\n"
+					+ "Saldo for konto nr: %d er %.2f", depositAmount, id, id, accounts[id-1].getBalance());
+		else
+			System.out.println("Ugyldig operasjon");
+	}
 }
 
 
